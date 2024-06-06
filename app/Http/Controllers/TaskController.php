@@ -7,6 +7,7 @@ use App\Models\Task;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use function Laravel\Prompts\alert;
 
 class TaskController extends Controller
 {
@@ -52,8 +53,8 @@ class TaskController extends Controller
         return redirect()->back();
 
     }
-    public function sil2($id){
-        $kat = categories::find($id);
+    public function sil2(request $request){
+        $kat = categories::find($request->id);
         if (!$kat) {
             return response()->json(['error'=> 'Görev bulunamadı!'],404);
         }
@@ -86,32 +87,6 @@ class TaskController extends Controller
     public function guncelle2(Request $request, $id)
     {
 
-        $kat = categories::find($id);
-
-        if (!$kat) {
-            return redirect()->back()->with('error', 'Görev bulunamadı!');
-        }
-        if($kat->getTasks->count() != 0){
-            foreach ($kat->getTasks as $task){
-                $task->delete();
-            }
-        }
-        $kat->gorevAdi = $request->gorevAdi;
-        $kat->category_id=$request->kategori;
-        $kat->gorevTarih = $request->gorevTarih;
-
-        $kat->save();
-        return redirect()->route('kategoriGoster');
-*****
-
-
-        if($kat->getTasks->count() != 0){
-            foreach ($kat->getTasks as $task){
-                $task->delete();
-            }
-        }
-        $kat->delete();
-        return response()->json(['success'=> 'Kategori başarıyla silindi']);
     }
 
     public function filtrele(Request $request){

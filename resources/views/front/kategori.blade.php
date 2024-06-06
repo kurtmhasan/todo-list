@@ -84,29 +84,30 @@
             ]
         });
     });
-    function confirmEdit(kategoriId) {
+    function confirmDelete2(taskId) {
         Swal.fire({
-            title: "bu veriyi güncellemek mi istiyorsunuz?",
+            title: "Emin Misin?",
             text: "Bunu geri alamazsınız!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#7cb9f3",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Veriyi Güncelle"
+            confirmButtonText: "Veriyi Sil!"
         }).then((result) => {
             if (result.isConfirmed) {
                 // AJAX isteği göndererek DELETE işlemini gerçekleştirme
                 $.ajax({
-                    url: '{{ route('guncelle2', ['id' => ':id']) }}'.replace(':id', kategoriId),
+                    url: '{{ route('sil2', ['id' => ':id']) }}'.replace(':id', taskId),
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
+
                     success: function(response) {
                         Swal.fire('Başarılı',response.success,'success')
-                            console.log('Başarıyla güncellendi:', response);
+                        console.log('Başarıyla silindi:', response);
                         $('#goster-kategori').DataTable().ajax.reload()
-                    // Başarı durumunda sayfayı yenileyebilir veya gerekli işlemleri gerçekleştirebilirsiniz.
+                        // Başarı durumunda sayfayı yenileyebilir veya gerekli işlemleri gerçekleştirebilirsiniz.
                     },
                     error: function(xhr, status, error) {
                         console.error('Hata:', error);
@@ -116,6 +117,7 @@
         });
     }
 </script>
+
 
 
 

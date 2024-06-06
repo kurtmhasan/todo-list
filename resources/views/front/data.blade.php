@@ -228,44 +228,27 @@
             showCancelButton: true,
             confirmButtonColor: "#7cb9f3",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Veri Silindi!"
+            confirmButtonText: "Veriyi Sil!"
         }).then((result) => {
             if (result.isConfirmed) {
-                var silRoute = "{{ route('sil',['id'=>':id']) }}".replace(':id',taskId); // Laravel tarafından oluşturulan silme rotası
-
                 // AJAX isteği göndererek DELETE işlemini gerçekleştirme
-                fetch(silRoute, {
+                $.ajax({
+                    url: '{{ route('sil', ['id' => ':id']) }}'.replace(':id', taskId),
+                    method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
-                    data: {'id':taskId}
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            Swal.fire({
-                                title: "Silindi!",
-                                text: "veri başarılı şekilde silindi.",
-                                icon: "success"
-                            }).then(ok =>{
-                                $('#task-table').DataTable().ajax.reload()
-                            });
-
-                        } else {
-                            Swal.fire({
-                                title: "Hata!",
-                                text: "Veri silinirken bir hata oluştu.",
-                                icon: "error"
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            title: "Hata!",
-                            text: "Veri silinirken bir hata oluştu.",
-                            icon: "error"
-                        });
-                    });
+                    data: {'id':taskId},
+                    success: function(response) {
+                        Swal.fire('Başarılı',response.success,'success')
+                        console.log('Başarıyla silindi:', response);
+                        $('#task-table').DataTable().ajax.reload()
+                        // Başarı durumunda sayfayı yenileyebilir veya gerekli işlemleri gerçekleştirebilirsiniz.
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Hata:', error);
+                    }
+                });
             }
         });
     }
